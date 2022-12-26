@@ -1,11 +1,7 @@
 import { createApp } from "vue";
+import "./style.css";
 import App from "./App.vue";
 import router from "./router";
+import VueCookies from 'vue3-cookies'
 
-import "./assets/main.css";
-
-const app = createApp(App);
-
-app.use(router);
-
-app.mount("#app");
+createApp(App).use(router).use(VueCookies).mount("#app");
