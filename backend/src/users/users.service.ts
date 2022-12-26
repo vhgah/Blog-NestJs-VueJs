@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { hash, compare } from 'bcrypt';
 import { CreateUserRequest } from './dto/request/create-user-request.dto';
 import { UserResponse } from './dto/response/user-response.dto';
-import { User } from './model/users';
+import { User } from './model/Users';
 import { UserRepository } from './users.repository';
 
 @Injectable()
@@ -29,6 +29,16 @@ export class UsersService {
 
         if (!isPasswordValid) {
             throw new UnauthorizedException('Password is not correct for email ' + user.email);
+        }
+
+        return this.buildResponse(user);
+    }
+
+    async getUserById(userId: string): Promise<UserResponse> {
+        const user = await this.userRepository.findOneById(userId);
+
+        if (!user) {
+            throw new NotFoundException('User not found with id: ' + userId);
         }
 
         return this.buildResponse(user);
