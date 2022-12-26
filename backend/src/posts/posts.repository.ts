@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { PostResponse } from "./dto/Response/post-response.dto";
 import { Post } from "./model/Posts";
 
 @Injectable()
@@ -12,20 +11,16 @@ export class PostRepository {
     ) {
     }
 
-    async insertOne(data: Partial<Post>): Promise<PostResponse> {
+    async insertOne(data: Partial<Post>): Promise<Post> {
         const post = new this.post(data);
         return post.save();
     }
 
-    async getAll(): Promise<Post[]> {
-        return await this.post.find().exec();
+    async getUserPosts(userId: string): Promise<Post[]> {
+        return await this.post.find({ user_id: userId }).exec();
     }
 
-    async getById(_id: string): Promise<Post> {
-        return await this.post.findById(_id).exec();
-    }
-
-    async update(id: string, content: string): Promise<Post> {
-        return await this.post.findByIdAndUpdate(id, )
+    async findOneById(postId: string): Promise<Post> {
+        return await this.post.findById(postId);
     }
 }

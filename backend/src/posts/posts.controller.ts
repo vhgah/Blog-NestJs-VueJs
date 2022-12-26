@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CurrentUser } from 'src/current-user.decorators';
 import { UserResponse } from 'src/users/dto/response/user-response.dto';
@@ -13,15 +13,24 @@ export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
   @Get()
-  async getPosts(): Promise<PostModel[]> {
-    return await this.postService.getPosts();
+  async getUserPosts(@CurrentUser() user: UserResponse): Promise<PostModel[]> {
+    return await this.postService.getUserPosts(user._id);
   }
 
   @Post()
   async createPost(
     @Body() createPostRequest: CreatePostRequest,
-    @CurrentUser() user: UserResponse
+    @CurrentUser() user: UserResponse,
   ): Promise<PostResponse> {
     return this.postService.createPost(createPostRequest, user);
+  }
+
+  @Put(':id')
+  async updatePost(
+    @Param('id') postId: string,
+    @Body() createPostRequest: CreatePostRequest,
+    @CurrentUser() user: UserResponse,
+  ): Promise<PostResponse> {
+    return this.postService.updatePost(postId, createPostRequest, user);
   }
 }
